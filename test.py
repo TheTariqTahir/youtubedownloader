@@ -1,32 +1,54 @@
-# from pytube import YouTube
-# from moviepy.editor import *
-
-# import os
-
-
-# yt = YouTube('https://youtu.be/FwhnIxAAwxo')
-
-# video = yt.streams.get_by_itag(134) 
-
-# path = 'sdcard/kivy'
-# path = os.getcwd()
-
-# name= video.default_filename
-# new_name = f'_{name}'
-# video.download()
-
-import os
-cwd = os.getcwd()
-name = os.path.join(cwd,'a.mp4')
-new_name = os.path.join(cwd,'_a.mp4')
-print(name)
-import ffmpeg
-ffmpeg.input(name).output(new_name).run()
+from kivymd.app import MDApp
+from kivy.clock import mainthread
+from kivy.lang import Builder
+KV = '''
+BoxLayout:
+    MDCard:
+        MDLabel:
+            id:text
+            text:'asdfasdfasfsa'
+        
+        MDRaisedButton:
+            text:'start'
+            on_press:app.start_thread()
+        MDRaisedButton:
+            text:'Click'
+            on_press:text.text='changed'
 
 
-# clip =VideoFileClip(name)
+'''
 
-# clip.write_videofile(new_name)
-# clip.close()
+import threading as th
+from kivymd.uix.boxlayout import BoxLayout
 
-# os.remove(os.path.join(path,name))
+class App(MDApp):
+        
+        
+    def build(self):
+        self.builder = Builder.load_string(KV)
+        return self.builder
+        
+    def start_thread(self):
+        th.Thread(target=self.start,daemon=True).start()
+        
+        
+    def start(self):
+        for i in range(13231231231):
+            print(i)
+            
+    def actual(self):
+        pass
+        
+# class Root(BoxLayout):
+#     def __init__(self,**kwargs):
+#         super().__init__(**kwargs)
+        
+        
+
+    
+
+if __name__=='__main__':
+    App().run()
+    
+    
+    

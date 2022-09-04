@@ -95,13 +95,25 @@ class Main(MDApp):
     def select_quality_T(self,type,quality_btn,download_button,spinner):
         spinner.active = True
         quality_btn.disabled= True
+        name = os.path.join(self.path,self.yt.title[:round(len(self.yt.title)/2)])
+        if type =='Audio':
+            try:
+                self.yt.streams.get_audio_only().download(self.path,filename=f'{name}.mp4')
+                mp4_without_frames = AudioFileClip(f'{name}.mp4')
+                mp4_without_frames.write_audiofile(f'{name}__.mp3')
+                mp4_without_frames.close() # function call mp4_to_mp3("my_mp4_path.mp4", "audio.mp3")
+                os.remove(os.path.join(self.path,f'{name}.mp4'))
+                print('done==========')
+                
+            except Exception as e:
+                self.show_dialog('Error',"Some Error Occurend")
         
-        
+        spinner.active = False
+        quality_btn.disabled: 'False'
         
 
-        Clock.schedule_once(lambda x : self.select_quality_(type,quality_btn,download_button,spinner),.5)
+        # Clock.schedule_once(lambda x : self.select_quality_(type,quality_btn,download_button,spinner),.5)
 
-    @mainthread
     def select_quality_(self,type,quality_btn,download_button,spinner):
             name = os.path.join(self.path,self.yt.title[:round(len(self.yt.title)/2)])
             if type =='Audio':
