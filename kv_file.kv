@@ -1,0 +1,292 @@
+          
+Main:
+
+<Main@Screen>
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        md_bg_color:app.theme_cls.bg_normal
+        padding: ('20dp', '20dp', '20dp', '20dp')
+        spacing: dp(20)
+        
+        MDLabel: 
+            text:'Youtube Downloader'
+            size_hint_y:None
+            height:dp(30)
+            font_size: sp(25)
+
+        
+
+        MDCardElevation:
+            size_hint: 1,None
+            height:dp(30)
+            spacing:dp(10)
+            md_bg_color:app.theme_cls.bg_normal
+
+            # ----------------   Home Button
+            MDCardButton:
+                id:b_home
+                md_bg_color:app.theme_cls.primary_color
+                # line_color:app.theme_cls.primary_dark
+                size_hint_x:None
+                width:dp(100)
+                elevation:dp(10)
+                # shadow_pos:3,-3
+                radius:dp(8)
+                on_press:
+                    self.md_bg_color=app.theme_cls.primary_color
+                    l_home.color=[1]*4
+
+                    b_download.md_bg_color=app.theme_cls.bg_normal
+                    l_download.color=app.theme_cls.primary_color
+
+                    screen_manager.transition.direction = 'right'
+                    screen_manager.current= 'Home'
+
+                MDLabel:
+                    id:l_home
+                    text:'Home'
+                    halign:'center'
+                    font_color:'Custom'
+                    color:[1]*4
+                    font_size:sp(20)
+
+            # ----------------   Downloaded Button
+            MDCardButton:
+                id:b_download
+                # line_color:app.theme_cls.primary_dark
+                md_bg_color:app.theme_cls.bg_normal
+                elevation:dp(10)
+                size_hint_x:None
+                width:dp(150)
+                # shadow_pos:3,-3
+                radius:dp(13)
+                on_press:
+                    # app.change_color(b_home)
+                    self.md_bg_color=app.theme_cls.primary_color
+                    l_download.color=[1]*4
+                    b_home.md_bg_color=app.theme_cls.bg_normal
+                    l_home.color=app.theme_cls.primary_color
+
+                    screen_manager.transition.direction = 'left'
+                    screen_manager.current= 'Downloaded'
+                MDLabel:
+                    id:l_download
+                    text:'Downloaded'
+                    halign:'center'
+                    font_color:'Custom'
+                    color:app.theme_cls.primary_color
+                    font_size:sp(20)
+
+       #=================== Main Screen
+        MDCardButton:
+            id:main
+            md_bg_color:app.theme_cls.primary_color
+            elevation:dp(5)
+            radius:dp(20)
+            shadow_pos:2,-2
+            # size_hint:None,None
+            # height:self.parent.height
+            # width:root.width*.9
+            AnchorLayout:
+                
+                MDCardButton:
+                    id:main
+                    md_bg_color:app.theme_cls.bg_normal
+                    elevation:dp(5)
+                    radius:dp(20)
+                    shadow_pos:2,-2
+                    size_hint:None,None
+                    height:self.parent.height-self.parent.height*.02
+                    width:self.parent.width-self.parent.width*.03
+                    ScreenManager:
+                        id:screen_manager
+
+                        HomeScreen:
+                        Downloaded:
+
+                
+
+
+<HomeScreen@Screen>:
+    name:'Home'
+    MDGridLayout:
+        cols:1
+        padding: ('20dp', '20dp', '20dp', '10dp')
+        spacing:dp(10)
+        #---------------   Text Field
+        MDTextField:
+            id:url
+            text:''
+            hint_text: "Enter Video URL"
+            font_size:sp(15)
+        
+        #---------------   Video / Playlist
+        MDBoxLayout:
+            size_hint_y:None
+            height:dp(30)
+            spacing:dp(5)
+            MDCardButton:
+                id:b_video
+                md_bg_color:app.theme_cls.primary_color
+                size_hint_x:None
+                width:dp(60)
+                elevation:dp(10)
+                radius:dp(5)
+                on_press:
+                    self.md_bg_color=app.theme_cls.primary_color
+                    l_video.color=[1]*4
+                    b_playlist.md_bg_color=app.theme_cls.bg_normal
+                    l_playlist.color=app.theme_cls.primary_color
+
+                MDLabel:
+                    id:l_video
+                    text:'Video'
+                    halign:'center'
+                    font_color:'Custom'
+                    color:[1]*4
+                    font_size:sp(12)
+
+            # ----------------   Playlist Button
+            MDCardButton:
+                id:b_playlist
+                md_bg_color:app.theme_cls.bg_normal
+                elevation:dp(10)
+                size_hint_x:None
+                width:dp(80)
+                elevation:dp(10)
+                radius:dp(5)
+                on_press:
+                    self.md_bg_color=app.theme_cls.primary_color
+                    l_playlist.color=[1]*4
+                    b_video.md_bg_color=app.theme_cls.bg_normal
+                    l_video.color=app.theme_cls.primary_color
+
+                MDLabel:
+                    id:l_playlist
+                    text:'Playlsit'
+                    halign:'center'
+                    font_color:'Custom'
+                    color:app.theme_cls.primary_color
+                    font_size:sp(15)
+
+
+            # ----------------   Video Button
+            MDCard:
+                md_bg_color:app.theme_cls.bg_normal
+                AnchorLayout:
+                MDRectangleFlatButton:
+                    text:'Get Video'
+                    size_hint:None,1
+                    on_press:
+                        app.get_video(url.text,image)
+                        text:''
+            
+        # ======================== if VIdeo Selected SEction   
+        MDCard:
+            orientation: 'vertical' 
+            md_bg_color:app.theme_cls.bg_normal
+            MDGridLayout:
+                cols:1
+                size_hint_y:.9
+                spacing:dp(15)
+            # ===========================  ThunbNAil
+                MDCard:
+                    size_hint:1,None
+                    height:dp(self.parent.height*.6)
+                    padding:dp(10)
+                    AsyncImage:
+                        id:image
+                        source:'default_image.png'
+                
+                MDBoxLayout:
+                    size_hint_y:None
+                    height:dp(30)
+                    spacing:dp(5)
+                    MDCardButton:
+                        id:b_video_
+                        md_bg_color:app.theme_cls.primary_color
+                        size_hint_x:None
+                        width:dp(60)
+                        elevation:dp(10)
+                        radius:dp(5)
+                        on_press:
+                            self.md_bg_color=app.theme_cls.primary_color
+                            l_video_.color=[1]*4
+                            b_audio.md_bg_color=app.theme_cls.bg_normal
+                            l_audio.color=app.theme_cls.primary_color
+
+                            app.select_quality(l_video_.text,quality_btn,download_button,Spinner)
+
+                        MDLabel:
+                            id:l_video_
+                            text:'Video'
+                            halign:'center'
+                            font_color:'Custom'
+                            color:[1]*4
+                            font_size:sp(12)
+
+                    # ----------------   audio Button
+                    MDCardButton:
+                        id:b_audio
+                        md_bg_color:app.theme_cls.bg_normal
+                        elevation:dp(10)
+                        size_hint_x:None
+                        width:dp(80)
+                        elevation:dp(10)
+                        radius:dp(5)
+                        on_press:
+                            self.md_bg_color=app.theme_cls.primary_color
+                            l_audio.color=[1]*4
+                            b_video_.md_bg_color=app.theme_cls.bg_normal
+                            l_video_.color=app.theme_cls.primary_color
+                            app.select_quality(l_audio.text,quality_btn,download_button,Spinner)
+
+                        MDLabel:
+                            id:l_audio
+                            text:'Audio'
+                            halign:'center'
+                            font_color:'Custom'
+                            color:app.theme_cls.primary_color
+                            font_size:sp(15)
+
+
+
+
+                MDBoxLayout:
+                    spacing:dp(15)
+                    MDRaisedButton:
+                        id:quality_btn
+                        pos_hint: { 'top':1 }
+                        disabled: 'True'
+                        text:'Select Quality'
+                        on_press:
+                            app.select_quality(self)
+                            # app.show_dialog('test','working')
+                    MDSpinner:
+                        id:Spinner
+                        size_hint:None,None
+                        pos_hint:{'top':.9}
+                        height:dp(25)
+                        width:dp(25)
+                        active:False
+
+            MDCard:
+                orientation: 'vertical'
+                md_bg_color:app.theme_cls.bg_normal
+                size_hint_y:.1
+                MDFillRoundFlatIconButton:
+                    id:download_button
+                    disabled: 'True'
+                    text:'DOWNLOAD'
+                    icon:'download'
+                    size_hint:1,None
+                    
+
+
+<Downloaded@Screen>:
+    name:'Downloaded'
+    MDBoxLayout:
+        MDLabel:
+            text:'Downloaded'
+            halign:'center'
