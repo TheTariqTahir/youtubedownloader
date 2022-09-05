@@ -117,7 +117,7 @@ Main:
         #---------------   Text Field
         MDTextField:
             id:url
-            text:''
+            text:'https://www.youtube.com/watch?v=0TWIT1Q264c'
             hint_text: "Enter Video URL"
             font_size:sp(15)
         
@@ -179,8 +179,7 @@ Main:
                     text:'Get Video'
                     size_hint:None,1
                     on_press:
-                        app.get_video(url.text,image)
-                        text:''
+                        app.get_video(url.text,image,Spinner,quality_btn,download_button)
             
         # ======================== if VIdeo Selected SEction   
         MDCard:
@@ -251,8 +250,6 @@ Main:
                             font_size:sp(15)
 
 
-
-
                 MDBoxLayout:
                     spacing:dp(15)
                     MDRaisedButton:
@@ -261,7 +258,7 @@ Main:
                         disabled: 'True'
                         text:'Select Quality'
                         on_press:
-                            app.select_quality(self)
+                            app.quality_popUp(self  )
                             # app.show_dialog('test','working')
                     MDSpinner:
                         id:Spinner
@@ -270,6 +267,7 @@ Main:
                         height:dp(25)
                         width:dp(25)
                         active:False
+                    
 
             MDCard:
                 orientation: 'vertical'
@@ -281,6 +279,7 @@ Main:
                     text:'DOWNLOAD'
                     icon:'download'
                     size_hint:1,None
+                    on_press:app.Download(Spinner)
                     
 
 
