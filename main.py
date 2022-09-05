@@ -38,15 +38,15 @@ class Main(MDApp):
        
     
     def build(self):
-        #self.w=Window.size=350, 650
-        self.w= Window.size
+        self.w=Window.size=350, 650
+        # self.w= Window.size
         self.theme_cls.primary_palette = "DeepOrange"
         self.theme_cls.primary_hue = "A400"
         # self.theme_cls.theme_style = "Light"
         self.theme_cls.theme_style = "Dark"
         self.bg_color = self.theme_cls.bg_normal
 
-        
+
         # self.path = os.getcwd()
         if platform == "android":
             from android.permissions import request_permissions, Permission
@@ -54,9 +54,13 @@ class Main(MDApp):
             self.path = 'sdcard/Downlaod'
         else:
             self.path = os.path.join(os.getcwd(),'data')
-            
+        try:
+            os.mkdir(self.path)
+        except:
+            pass
         self.type='Video'
         self.selected_qulity = ''
+        self.qulity_available=False
 
 
         # text_file = open('hotreloader.kv','r')
@@ -69,7 +73,7 @@ class Main(MDApp):
         with open(self.path_to_kv_file,"w+") as kv_file:
             kv_file.write(text)
   
-    #Get video
+    #==========================   Get video
     def get_video(self,url,image,spinner,quality_btn,download_btn):
         if url  =='':
             self.show_dialog('Error','Please enter url')
@@ -83,12 +87,13 @@ class Main(MDApp):
         self.yt = YouTube(url)
         image.source = self.yt.thumbnail_url
         self.spinner_on(spinner,quality_btn)
-        # time.sleep(1)
         threading.Thread(target=self.get_video_types,args=(spinner,quality_btn,download_btn),daemon=True).start()
         
        
     
     def get_video_types(self,spinner,quality_btn,download_btn):
+            print('running')
+            # self.qulity_available=False
             self.video_types=self.yt.streams.filter(progressive=True)
             quality_btn.text='Select Quality'
 
@@ -118,81 +123,89 @@ class Main(MDApp):
         download_btn.disabled= False
         self.menu.dismiss()
         
-    def select_quality(self,type,quality_btn,download_button,spinner):
+    def select_quality(self,type,quality_btn,download_button,spinner,url):
+            if url =='':
+                self.show_dialog('Error','Please Enter URL')
+                return
             self.new_thread = threading.Thread(target = self.select_quality_T , args=(type,quality_btn,download_button,spinner),daemon=True) # Now call that function from this a new thread.
             self.new_thread.start()
 
     def select_quality_T(self,type,quality_btn,download_button,spinner):
         self.type = type
-        self.spinner_on(spinner)
-        
+
         if self.type =='Audio':
-          download_button.disabled= False
-          quality_btn.disabled= True
+            download_button.disabled= False
         elif self.type =='Video':
-            threading.Thread(target=self.get_video_types,args=(spinner,quality_btn,download_button),daemon=True).start()
-            quality_btn.disabled= False
-            download_button.disabled-= False
-          
-        self.spinner_off(spinner)
+            download_button.disabled= True
+
         
 
     def Download(self,spinner):
         if self.type =='Video':
             self.spinner_on(spinner)
-            threading.Thread(target=self.download_video,daemon=True).start()
+            threading.Thread(target=self.download_video,args=(spinner,),daemon=True).start()
         else:
-            pass
-            threading.Thread(target=self.download_audio,daemon=True).start()
+            self.spinner_on(spinner)
+            threading.Thread(target=self.download_audio,args=(spinner,),daemon=True).start()
         
-    def download_video(self):
+    def download_video(self,spinner):
+        print('Downloading Video')
+
         video = self.yt.streams.get_by_itag(self.selected_qulity)
-        name_old = video.title[:round(len(video.title)/2)]
+        name_old = video.title[:round(len(video.title)*.6)].replace('|','').strip()
         name = os.path.join(self.path,name_old)
+
         video.download(filename=f'{name}.mp4')
-        
         clip = VideoFileClip(f'{name}.mp4')
         clip.write_videofile(f'{name}_.mp4')
         clip.close()
         os.remove(f'{name}.mp4')
+        self.spinner_off(spinner)
         
-    def download_audio(self):
+        
+    def download_audio(self,spinner):
+        print('Downloading Audio')
         video = self.yt.streams.get_audio_only()
-        name_old = video.title[:round(len(video.title)/2)]
+        # name_old = video.default_filename.split('.')
+        name_old = video.title[:round(len(video.title)*.6)].replace('|','').strip()
+        
         name = os.path.join(self.path,name_old)
         
         try:
             video.download(filename=f'{name}.mp4')
             mp4_without_frames = AudioFileClip(f'{name}.mp4')
-            mp4_without_frames.write_audiofile(f'{name}__.mp3')
+            mp4_without_frames.write_audiofile(f'{name}.mp3')
             mp4_without_frames.close() # function call mp4_to_mp3("my_mp4_path.mp4", "audio.mp3")
             os.remove(f'{name}.mp4')
             print('done==========')
+            self.spinner_off(spinner)
             
         except Exception as e:
             print(e)
 
-        # @mainthread
-        # def off():
-        #     self.spinner_off(spinner)
-        # off()
    
             
    
     # ----------------------Spinner Function 
     @mainthread
-    def spinner_on(self,spinner,btn=None):
+    def spinner_on(self,spinner,quality_btn=None,download_button=None):
         spinner.active=True
-        if btn ==None:
+        if quality_btn ==None:
             return
-        btn.disabled= True
+        quality_btn.disabled= True
+        if download_button ==None:
+            return
+        download_button.disabled= True
         
     @mainthread
-    def spinner_off(self,spinner,btn=None):
+    def spinner_off(self,spinner,quality_btn=None,download_button=None):
         spinner.active=False
-        if btn ==None:
+        if quality_btn ==None:
             return
-        btn.disabled= False
+        quality_btn.disabled= False
+        if download_button ==None:
+            return
+        download_button.disabled= False
         
     # ----------------------MEnu Function 
     #Menu Funtion
@@ -212,7 +225,6 @@ class Main(MDApp):
 
     def close_dialog(self, obj):
             self.dialog.dismiss()
-            self.menu.dismiss()
         
 if __name__=='__main__':
     Main().run()
