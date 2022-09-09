@@ -1,13 +1,14 @@
 from typing import List
 from pytube import YouTube
 from pytube import Playlist
+from moviepy.editor import *
 import os
 
 
 
-url = 'https://www.youtube.com/watch?v=yBrMXRhVbRE'
+url = 'https://www.youtube.com/watch?v=0TWIT1Q264c'
 
-def progress_function(stream, chunk, bytes_remaining):
+def progress_function(stream, chunk, bytes_remaining,text):
     total_size = stream.filesize
     bytes_downloaded = total_size - bytes_remaining
     bytes_downloaded = total_size - bytes_remaining
@@ -19,16 +20,24 @@ def progress_function(stream, chunk, bytes_remaining):
     dwnd = (bytes_downloaded / 1024) / 1024
     dwnd = round(dwnd, 1)
     percentage_of_completion = round(percentage_of_completion,2)
-    print(f'Download Progress: {percentage_of_completion}%, Total Size:{totalsz} MB, Downloaded: {dwnd} MB, Remaining:{remain} MB')
+    print(text)
+    # print(f'Download Progress: {percentage_of_completion}%, Total Size:{totalsz} MB, Downloaded: {dwnd} MB, Remaining:{remain} MB')
 
+text='asdf'
+# video= YouTube(url,on_progress_callback=(lambda text = text :progress_function(text)))
+video= YouTube(url,on_progress_callback=progress_function(**kwargs,text))
+video.streams.filter(progressive=True).first().download()
 
-yt = YouTube(url)
+# yt = YouTube(url)
 
-video_list = {}
-video = yt.streams.all()
-count = 0
-for i in range(len(video)):
-    print(i)    
+# video_list = {}
+# video = yt.streams.first().default_filename
+
+# name = (video.split('.'))
+# print(f'{name[0]}.{name[1]}')
+
+# for i in range(len(video)):
+#     print(i)    
 # print(video_list)
 # video = yt.streams.get_audio_only()
 # video_list.append(video)
@@ -38,8 +47,6 @@ for i in range(len(video)):
 
 
 
-# video= YouTube(url,on_progress_callback=progress_function)
-# video.streams.filter(progressive=True).last().download()
 
 # for playlist
 
