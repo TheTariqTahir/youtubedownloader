@@ -1,4 +1,4 @@
-          
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
 Main:
 
 <Main@Screen>
@@ -7,106 +7,141 @@ Main:
         orientation: 'vertical'
         md_bg_color:app.theme_cls.bg_normal
         padding: ('20dp', '20dp', '20dp', '20dp')
-        spacing: dp(20)
+        spacing: dp(15)
         
-        MDLabel: 
-            text:'Youtube Downloader'
-            size_hint_y:None
-            height:dp(30)
-            font_size: sp(25)
+        MDCard:
+            size_hint:1,None
+            md_bg_color:app.theme_cls. bg_normal
+            height:dp(50)
+            padding: ('5dp', '15dp', '15dp', '15dp')
+            MDLabel: 
+                text:'YOUTUBE DOWNLOADER'
+                size_hint_y:None
+                pos_hint:{'center_y':.5}
+                # height:dp(50)
+                font_size: sp(20)   
+            MDCard:
+                size_hint:None,None
+                size: '30dp','30dp'
+                md_bg_color:.8,.2,.4,1
+                pos_hint:{'center_y':.5}
+                radius:dp(40)
+                on_press:app.test()
+                Image:
+                    source:'src/profile_logo.png'
 
         
 
         MDCardElevation:
             size_hint: 1,None
-            height:dp(30)
+            height:dp(40)
             spacing:dp(10)
             md_bg_color:app.theme_cls.bg_normal
 
             # ----------------   Home Button
             MDCardButton:
                 id:b_home
-                md_bg_color:app.theme_cls.primary_color
+                disabled:True
+                md_bg_color:app.theme_cls.primary_color 
                 # line_color:app.theme_cls.primary_dark
                 size_hint_x:None
                 width:dp(100)
                 elevation:dp(10)
+                line_color:app.theme_cls.primary_color
                 # shadow_pos:3,-3
                 radius:dp(8)
                 on_press:
-                    self.md_bg_color=app.theme_cls.primary_color
-                    l_home.color=[1]*4
-
-                    b_download.md_bg_color=app.theme_cls.bg_normal
-                    l_download.color=app.theme_cls.primary_color
-
-                    screen_manager.transition.direction = 'right'
-                    screen_manager.current= 'Home'
+                    app.change_to_home(screen_manager,b_home,l_home,b_download,l_download)
 
                 MDLabel:
                     id:l_home
                     text:'Home'
                     halign:'center'
                     font_color:'Custom'
-                    color:[1]*4
+                    color:[1]*4 if b_home.disabled=='False' else 'black'
+                    # font_style:'Button'
                     font_size:sp(20)
+                    
 
             # ----------------   Downloaded Button
             MDCardButton:
                 id:b_download
+                disabled:True
                 # line_color:app.theme_cls.primary_dark
-                md_bg_color:app.theme_cls.bg_normal
+                md_bg_color:app.theme_cls.bg_normal 
                 elevation:dp(10)
                 size_hint_x:None
                 width:dp(150)
+                line_color:app.theme_cls.primary_color
                 # shadow_pos:3,-3
-                radius:dp(13)
+                radius:dp(8)
                 on_press:
-                    # app.change_color(b_home)
-                    self.md_bg_color=app.theme_cls.primary_color
-                    l_download.color=[1]*4
-                    b_home.md_bg_color=app.theme_cls.bg_normal
-                    l_home.color=app.theme_cls.primary_color
-
-                    screen_manager.transition.direction = 'left'
-                    screen_manager.current= 'Downloaded'
+                    app.change_to_downloading(screen_manager,b_download,l_download,b_home,l_home)
                 MDLabel:
                     id:l_download
-                    text:'Downloaded'
+                    text:'Downloading'
                     halign:'center'
                     font_color:'Custom'
                     color:app.theme_cls.primary_color
                     font_size:sp(20)
 
-       #=================== Main Screen
-        MDCardButton:
-            id:main
-            md_bg_color:app.theme_cls.primary_color
-            elevation:dp(5)
-            radius:dp(20)
-            shadow_pos:2,-2
-            # size_hint:None,None
-            # height:self.parent.height
-            # width:root.width*.9
-            AnchorLayout:
-                
-                MDCardButton:
-                    id:main
-                    md_bg_color:app.theme_cls.bg_normal
-                    elevation:dp(5)
-                    radius:dp(20)
-                    shadow_pos:2,-2
-                    size_hint:None,None
-                    height:self.parent.height-self.parent.height*.02
-                    width:self.parent.width-self.parent.width*.03
-                    ScreenManager:
-                        id:screen_manager
+        AnchorLayout:
+            MDCardButton:
+                id:main
+                line_color:app.theme_cls.primary_color
+                line_width:dp(2.5)
+                md_bg_color:app.theme_cls.bg_normal
+                elevation:dp(5)
+                radius:dp(20)
+                shadow_pos:2,-2
+                size_hint:1,None
+                height:self.parent.height-self.parent.height*.02
+                # width:self.parent.width-self.parent.width*.03
+                ScreenManager:
+                    id:screen_manager
 
-                        HomeScreen:
-                        Downloaded:
+                    CheckActive:
+                    HomeScreen:
+                    Downloaded:
 
                 
+<CheckActive@Screen>:
+    name:'CheckActive'
 
+    AnchorLayout:
+        MDGridLayout:
+            cols:1
+            # md_bg_color:'green'
+            size_hint:.8,None
+            height:dp(300)
+            spacing:dp(15)
+            padding: ('20dp', '20dp', '20dp', '20dp')
+            # orientation: 'vertical'
+            MDLabel:
+                text:'Please Verify'
+                font_size:sp(40)
+                halign:'center'
+           
+            MDTextField:
+                id:email
+                text:''
+                hint_text:'Enter Email'
+        
+            MDTextField:
+                id:password
+                text:''
+                hint_text:'Enter password'
+            MDRaisedButton:
+                text:'CHECK'
+                size_hint_x:1
+                on_press:
+                    # root.manager.transition = FadeTransition()
+                    # root.manager.current='Home'
+                    app.check_password(root,email.text,password.text)
+
+
+            
+        
 
 <HomeScreen@Screen>:
     name:'Home'
@@ -117,7 +152,9 @@ Main:
         #---------------   Text Field
         MDTextField:
             id:url
+            # text:'https://www.youtube.com/watch?v=0TWIT1Q264c'
             text:''
+
             hint_text: "Enter Video URL"
             font_size:sp(15)
         
@@ -129,7 +166,8 @@ Main:
             MDCardButton:
                 id:b_video
                 md_bg_color:app.theme_cls.primary_color
-                size_hint_x:None
+                size_hint:None,None
+                height:dp(30)
                 width:dp(60)
                 elevation:dp(10)
                 radius:dp(5)
@@ -145,18 +183,20 @@ Main:
                     halign:'center'
                     font_color:'Custom'
                     color:[1]*4
-                    font_size:sp(12)
+                    font_size:sp(15)
 
             # ----------------   Playlist Button
             MDCardButton:
                 id:b_playlist
                 md_bg_color:app.theme_cls.bg_normal
                 elevation:dp(10)
-                size_hint_x:None
+                size_hint:None,None
+                height:dp(30)
                 width:dp(80)
                 elevation:dp(10)
                 radius:dp(5)
                 on_press:
+                    
                     self.md_bg_color=app.theme_cls.primary_color
                     l_playlist.color=[1]*4
                     b_video.md_bg_color=app.theme_cls.bg_normal
@@ -178,9 +218,9 @@ Main:
                 MDRectangleFlatButton:
                     text:'Get Video'
                     size_hint:None,1
+                    elevation:dp(8)
                     on_press:
-                        app.get_video(url.text,image)
-                        text:''
+                        app.get_video(url.text,image,Spinner,quality_btn,quality,download_button,file_name)
             
         # ======================== if VIdeo Selected SEction   
         MDCard:
@@ -190,103 +230,249 @@ Main:
                 cols:1
                 size_hint_y:.9
                 spacing:dp(15)
+                height:dp(130)
             # ===========================  ThunbNAil
                 MDCard:
+                    md_bg_color:app.theme_cls.bg_normal
                     size_hint:1,None
-                    height:dp(self.parent.height*.6)
-                    padding:dp(10)
-                    AsyncImage:
-                        id:image
-                        source:'default_image.png'
+                    height:dp(110)
+                    # padding:dp(10)
+                    spacing:dp(5)
+                    orientation: 'horizontal'
+                    MDCard:
+                        padding:dp(3)
+                        AsyncImage:
+                            id:image
+                            source:'default_image.png'
+                    
+                    MDGridLayout:
+                        cols:1
+                        md_bg_color:app.theme_cls.bg_normal
+                        size_hint_x:None
+                        width:dp(140)
+                        # cols:1
+                        spacing:dp(15)
+                        padding:dp(5)
+                        # orientation: 'vertical'
+                        MDBoxLayout:
+                            orientation: 'horizontal'
+                            size_hint:1,None
+                            height:dp(30)
+                            padding:dp(0)
+                            # spacing:dp(10)
+                            # ----------------   audio Button
+                            MDCardButton:
+                                id:b_video_
+                                md_bg_color:app.theme_cls.primary_color
+                                size_hint_x:None
+                                size_hint_y:None
+                                height:dp(30)
+                                width:dp(65)
+                                elevation:dp(10)
+                                radius:dp(5)
+                                on_press:
+                                    self.md_bg_color=app.theme_cls.primary_color
+                                    l_video_.color=[1]*4
+                                    b_audio.md_bg_color=app.theme_cls.bg_normal
+                                    l_audio.color=app.theme_cls.primary_color
+
+                                    app.select_quality(l_video_.text,quality_btn,download_button,Spinner,url.text)
+
+                                MDLabel:
+                                    id:l_video_
+                                    text:'Video'
+                                    halign:'center'
+                                    font_color:'Custom'
+                                    color:[1]*4
+                                    font_size:sp(13)
+
+                            MDCardButton:
+                                id:b_audio
+                                md_bg_color:app.theme_cls.bg_normal
+                                elevation:dp(10)
+                                size_hint_x:None
+                                size_hint_y:None
+                                height:dp(30)
+                                width:dp(65)
+                                elevation:dp(10)
+                                radius:dp(5)
+                                on_press:
+                                    self.md_bg_color=app.theme_cls.primary_color
+                                    l_audio.color=[1]*4
+                                    b_video_.md_bg_color=app.theme_cls.bg_normal
+                                    l_video_.color=app.theme_cls.primary_color
+                                    app.select_quality(l_audio.text,quality_btn,download_button,Spinner,url.text)
+
+                                MDLabel:
+                                    id:l_audio
+                                    text:'Audio'
+                                    halign:'center'
+                                    font_color:'Custom'
+                                    color:app.theme_cls.primary_color
+                                    font_size:sp(13)
+                        MDBoxLayout:
+                            size_hint:1,None
+                            height:quality_btn.height
+                            # md_bg_color:app.theme_cls.bg_light
+                            spacing:dp(15)
+                            MDCardButton:
+                                id:quality_btn
+                                disabled:True
+                                md_bg_color:app.theme_cls.bg_light if self.disabled else app.theme_cls.primary_color
+                                elevation:dp(10)
+                                size_hint_x:None
+                                size_hint_y:None
+                                height:dp(35)
+                                width:dp(130)
+                                elevation:dp(10)
+                                radius:dp(5)
+                                on_press:
+                                    app.quality_popUp(self  )
+                            #         # app.show_dialog('test','working')
+
+                                MDLabel:
+                                    id:quality
+                                    text:'Select Quality'
+                                    halign:'center'
+                                    font_color:'Custom'
+                                    color:'white'
+                                    font_size:sp(15)
                 
                 MDBoxLayout:
                     size_hint_y:None
-                    height:dp(30)
-                    spacing:dp(5)
-                    MDCardButton:
-                        id:b_video_
-                        md_bg_color:app.theme_cls.primary_color
-                        size_hint_x:None
-                        width:dp(60)
-                        elevation:dp(10)
-                        radius:dp(5)
-                        on_press:
-                            self.md_bg_color=app.theme_cls.primary_color
-                            l_video_.color=[1]*4
-                            b_audio.md_bg_color=app.theme_cls.bg_normal
-                            l_audio.color=app.theme_cls.primary_color
-
-                            app.select_quality(l_video_.text,quality_btn,download_button,Spinner)
-
-                        MDLabel:
-                            id:l_video_
-                            text:'Video'
-                            halign:'center'
-                            font_color:'Custom'
-                            color:[1]*4
-                            font_size:sp(12)
-
-                    # ----------------   audio Button
-                    MDCardButton:
-                        id:b_audio
-                        md_bg_color:app.theme_cls.bg_normal
-                        elevation:dp(10)
-                        size_hint_x:None
-                        width:dp(80)
-                        elevation:dp(10)
-                        radius:dp(5)
-                        on_press:
-                            self.md_bg_color=app.theme_cls.primary_color
-                            l_audio.color=[1]*4
-                            b_video_.md_bg_color=app.theme_cls.bg_normal
-                            l_video_.color=app.theme_cls.primary_color
-                            app.select_quality(l_audio.text,quality_btn,download_button,Spinner)
-
-                        MDLabel:
-                            id:l_audio
-                            text:'Audio'
-                            halign:'center'
-                            font_color:'Custom'
-                            color:app.theme_cls.primary_color
-                            font_size:sp(15)
-
-
-
+                    height:dp(70)
+                    orientation: 'vertical'
+                    MDLabel:
+                        text:'Filename'
+                        font_size:sp(16)
+                    MDTextField:
+                        id:file_name
+                        text:app.filename
+                        hint_text:''
+                        font_size:sp(12)
 
                 MDBoxLayout:
-                    spacing:dp(15)
-                    MDRaisedButton:
-                        id:quality_btn
-                        pos_hint: { 'top':1 }
-                        disabled: 'True'
-                        text:'Select Quality'
-                        on_press:
-                            app.select_quality(self)
-                            # app.show_dialog('test','working')
+                    size_hint:1,None
+                    height:dp(70)
+                    orientation: 'vertical'
+                    
+                    MDLabel:
+                        text:'Download path'
+                        font_size:sp(16)
+                    MDCard:
+                        md_bg_color:app.theme_cls.bg_normal
+                        spacing:dp(10)
+                        MDTextField:
+                            id: path
+                            text:app.path
+                            font_size:sp(12)
+                        
+                        MDCard:
+                            size_hint:None,None
+                            width:dp(40)                            
+                            height:dp(40)
+                            pos_hint:{'top':1.4}
+                            outline_color:app.theme_cls.primary_color
+                            on_press:
+                                app.file_manager_open(path)
+                            AnchorLayout:
+                                MDIcon:   
+                                    icon:'folder'
+                                    font_size:sp(25)
+                            
+                AnchorLayout:
                     MDSpinner:
                         id:Spinner
                         size_hint:None,None
-                        pos_hint:{'top':.9}
+                        # pos_hint:{'center_x':.5,'center_y':.5}
                         height:dp(25)
                         width:dp(25)
                         active:False
+                
+                    
 
             MDCard:
                 orientation: 'vertical'
                 md_bg_color:app.theme_cls.bg_normal
                 size_hint_y:.1
+                
                 MDFillRoundFlatIconButton:
                     id:download_button
                     disabled: 'True'
                     text:'DOWNLOAD'
                     icon:'download'
                     size_hint:1,None
+                    on_press:
+                        # root.manager.current= 'Downloaded'
+                        app.Download(Spinner,root,file_name)
                     
 
 
 <Downloaded@Screen>:
     name:'Downloaded'
-    MDBoxLayout:
-        MDLabel:
-            text:'Downloaded'
-            halign:'center'
+    MDGridLayout:
+        id:download_screen
+        cols:1
+        padding: ('20dp', '20dp', '20dp', '10dp')
+        spacing:dp(10)
+        # MDCard:
+        #     size_hint_y:None
+        #     height:dp(70)
+        #     radius:dp(8)
+        #     md_bg_color:app.theme_cls.bg_light
+        #     line_color:app.theme_cls.primary_color
+        #     line_width:dp(1.3)
+        #     padding:dp(10)
+        #     spacing:dp(5)
+
+        #     MDCard:
+        #         size_hint:None,None
+        #         height:dp(50)
+        #         width:dp(50)
+        #         FitImage:
+        #             source:'default_image.png'
+        #             radius:dp(8)
+
+
+        #     MDCard:
+        #         size_hint:.8,1
+        #         orientation: 'vertical'
+        #         spacing: '5dp'
+        #         MDCard:
+        #             padding: ('10dp', '0dp', '0dp', '0dp')
+        #             MDLabel:
+        #                 text:'Name of file'
+        #                 font_color:'Custome'
+        #                 font_size:dp(12)
+        #                 color:'white'
+        #         MDCard:
+        #             size_hint:1,None
+        #             height:dp(6)
+        #             padding:dp(10),dp(10)
+        #             MDProgressBar:
+        #                 id:download_progress
+        #                 value:0.0
+        #                 size_hint:1,None
+        #                 height:dp(5)
+        #                 pos_hint:{'center_y':.5}
+                
+        #         MDCard:
+        #             padding: ('10dp', '0dp', '10dp', '0dp')
+        #             MDLabel:
+        #                 id:progress_percentage
+        #                 text:'0.0%'
+        #                 font_color:'Custom'
+        #                 halign:'left'
+        #                 color:'white'
+        #                 font_size:dp(12)
+
+                        
+
+        #             MDLabel:
+        #                 text:'100%'
+        #                 font_color:'Custom'
+        #                 color:'white'
+        #                 font_size:dp(12)
+        #                 halign:'right'
+
+                
