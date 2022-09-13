@@ -163,52 +163,52 @@ Main:
             size_hint_y:None
             height:dp(30)
             spacing:dp(5)
-            MDCardButton:
-                id:b_video
-                md_bg_color:app.theme_cls.primary_color
-                size_hint:None,None
-                height:dp(30)
-                width:dp(60)
-                elevation:dp(10)
-                radius:dp(5)
-                on_press:
-                    self.md_bg_color=app.theme_cls.primary_color
-                    l_video.color=[1]*4
-                    b_playlist.md_bg_color=app.theme_cls.bg_normal
-                    l_playlist.color=app.theme_cls.primary_color
+        #     MDCardButton:
+        #         id:b_video
+        #         md_bg_color:app.theme_cls.primary_color
+        #         size_hint:None,None
+        #         height:dp(30)
+        #         width:dp(60)
+        #         elevation:dp(10)
+        #         radius:dp(5)
+        #         on_press:
+        #             self.md_bg_color=app.theme_cls.primary_color
+        #             l_video.color=[1]*4
+        #             b_playlist.md_bg_color=app.theme_cls.bg_normal
+        #             l_playlist.color=app.theme_cls.primary_color
 
-                MDLabel:
-                    id:l_video
-                    text:'Video'
-                    halign:'center'
-                    font_color:'Custom'
-                    color:[1]*4
-                    font_size:sp(15)
+        #         MDLabel:
+        #             id:l_video
+        #             text:'Video'
+        #             halign:'center'
+        #             font_color:'Custom'
+        #             color:[1]*4
+        #             font_size:sp(15)
 
-            # ----------------   Playlist Button
-            MDCardButton:
-                id:b_playlist
-                md_bg_color:app.theme_cls.bg_normal
-                elevation:dp(10)
-                size_hint:None,None
-                height:dp(30)
-                width:dp(80)
-                elevation:dp(10)
-                radius:dp(5)
-                on_press:
+        #     # ----------------   Playlist Button
+        #     MDCardButton:
+        #         id:b_playlist
+        #         md_bg_color:app.theme_cls.bg_normal
+        #         elevation:dp(10)
+        #         size_hint:None,None
+        #         height:dp(30)
+        #         width:dp(80)
+        #         elevation:dp(10)
+        #         radius:dp(5)
+        #         on_press:
                     
-                    self.md_bg_color=app.theme_cls.primary_color
-                    l_playlist.color=[1]*4
-                    b_video.md_bg_color=app.theme_cls.bg_normal
-                    l_video.color=app.theme_cls.primary_color
+        #             self.md_bg_color=app.theme_cls.primary_color
+        #             l_playlist.color=[1]*4
+        #             b_video.md_bg_color=app.theme_cls.bg_normal
+        #             l_video.color=app.theme_cls.primary_color
 
-                MDLabel:
-                    id:l_playlist
-                    text:'Playlsit'
-                    halign:'center'
-                    font_color:'Custom'
-                    color:app.theme_cls.primary_color
-                    font_size:sp(15)
+        #         MDLabel:
+        #             id:l_playlist
+        #             text:'Playlsit'
+        #             halign:'center'
+        #             font_color:'Custom'
+        #             color:app.theme_cls.primary_color
+        #             font_size:sp(15)
 
 
             # ----------------   Video Button

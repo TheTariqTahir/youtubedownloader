@@ -127,7 +127,6 @@ class Main(MDApp):
         self.con = sqlite3.connect('offline.db')
         self.cur =self.con.cursor()
         
-
         self.cur.execute('SELECT * from login')
         res = self.cur.fetchone()
         if res[0]=='True':
@@ -136,7 +135,8 @@ class Main(MDApp):
                 self.builder.ids.screen_manager.current='Home'
                 self.builder.ids.b_download.disabled=False
                 self.builder.ids.b_home.disabled=False
-        self.con.commit()     
+        self.con.commit()
+          
             
 
         return self.builder
@@ -164,17 +164,28 @@ class Main(MDApp):
         try:
             email = email_.split('@')[0]
             data =self.db.child('data').child(email).get()
+            self.online_allow = False
+            self.offline_allow = False
             if data.val()['active'] == 'False':
                 if email_ == (data.val()['email']) and password==data.val()['password']:
-                    self.db.child('data').child(email).update({"active":'True'})
-                    self.cur.execute("UPDATE login set active='True',email="+'email'+"")
-                    self.con.commit()
-                    root.manager.transition = FadeTransition()
-                    root.manager.current='Home'
-                    root.manager.transition = SlideTransition() 
-                    self.builder.ids.b_download.disabled=False
-                    self.builder.ids.b_home.disabled=False
-                    return True
+                    try:
+                        self.db.child('data').child(email).update({"active":'True'})
+                        self.online_allow = True
+                    except Exception as e:
+                        self.show_dialog('Online',str(e))
+                    try:
+                        self.cur.execute("UPDATE login set active='True',email='"+str(email_)+"'")
+                        self.con.commit()
+                        self.offline_allow = True
+                    except Exception as e:
+                        self.show_dialog('offline',str(e))
+                    if self.online_allow and self.offline_allow:
+                        root.manager.transition = FadeTransition()
+                        root.manager.current='Home'
+                        root.manager.transition = SlideTransition() 
+                        self.builder.ids.b_download.disabled=False
+                        self.builder.ids.b_home.disabled=False
+                        return True
             else:
                 self.show_dialog('Acces Denied','Account already registered')
 
